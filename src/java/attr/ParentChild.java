@@ -45,34 +45,32 @@ public class ParentChild {
             statement1.setString(10, applicant.district);
             statement1.setString(11, applicant.grama);
             statement1.executeUpdate();
-            
-            
 
             successA = true;
             
-            String rawId= "SELECT applicant_id from applicant WHERE first_name= ? AND last_name= ? AND initials= ? AND dob= ? AND gender= ? AND religion= ? AND home_number= ? AND street_name= ? AND city= ? AND district= ? AND grama_niladari_div= ?";
+            String rawId= "SELECT applicant_id from applicant WHERE first_name= ? AND last_name= ? AND initials= ? AND gender= ? AND religion= ? AND home_number= ? AND street_name= ? AND city= ? AND district= ? AND grama_niladari_div= ?";
             PreparedStatement stm= con.prepareStatement(rawId);
             stm.setString(1, applicant.f_name);
             stm.setString(2, applicant.l_name);
             stm.setString(3, applicant.initial);
-            stm.setString(4, applicant.dob);
-            stm.setString(5, applicant.gender);
-            stm.setString(6, applicant.religeon);
-            stm.setString(7, applicant.h_num);
-            stm.setString(8, applicant.street_name);
-            stm.setString(9, applicant.city_name);
-            stm.setString(10, applicant.district);
-            stm.setString(11, applicant.grama);
+            //stm.setString(4, applicant.dob);
+            stm.setString(4, applicant.gender);
+            stm.setString(5, applicant.religeon);
+            stm.setString(6, applicant.h_num);
+            stm.setString(7, applicant.street_name);
+            stm.setString(8, applicant.city_name);
+            stm.setString(9, applicant.district);
+            stm.setString(10, applicant.grama);
             
-            ResultSet resultset =stm.executeQuery(rawId);
-                                        
-                 int a=resultset.getInt("applicant_id");
-                successB=true;
+            ResultSet resultset =stm.executeQuery();
+            
+            int applicant_id=0;      
+            if (resultset.next()) {
+                 applicant_id=Integer.parseInt(resultset.getString("applicant_id"));
+                 successB=true;
+            }
+            successB=true;
            
-                 
-           
-            
-            
             
             String rawString2 = "INSERT INTO parent (NIC, first_name, last_name, initials, occupation, gender, tel_num) VALUE (?,?,?,?,?,?,?)";
             PreparedStatement statement2 = con.prepareStatement(rawString2);
@@ -87,15 +85,15 @@ public class ParentChild {
         
             successP=true;
             
-            String rawString3= "INSERT INTO applicant_parent (applicant_id,NIC) VALUE (?, ?)";
+            String rawString3= "INSERT INTO applicant_parent (applicant_id,NIC) VALUE ( ? , ? )";
             PreparedStatement statement3 =con.prepareStatement(rawString3);
-            statement3.setInt(1,a);
+            statement3.setInt(1,applicant_id);
             statement3.setString(2,parent.NIC);
             statement3.executeUpdate();
             
             successR=true;
                     
-            con.setAutoCommit(true);
+            con.commit();
             
             
             
@@ -118,15 +116,6 @@ public class ParentChild {
         
     }
     
-    /*public String getdata(Applicant applicant) throws SQLException, IOException {
-        Connection c =new DbConnector().getCon();
-        String rawId= "SELECT applicant_id from applicant WHERE first_name= '"+applicant.f_name+"' AND last_name='"+applicant.l_name+"' AND initials='"+applicant.initial+"' AND dob='"+applicant.dob+"' AND gender='"+applicant.gender+"' AND religion='"+applicant.religeon+"' AND home_number='"+applicant.h_num+"' AND street_name='"+applicant.street_name+"' AND city='"+applicant.city_name+"' district='"+applicant.district+"' AND grama_niladari_div='"+applicant.grama+"'";
-            Statement stm= c.createStatement();
-            ResultSet resultset =stm.executeQuery(rawId);
-            System.out.println("rawId");
-                            
-                 int a=resultset.getInt("applicant_id");
-                return rawId;*/
-    }
+   
     
 }
